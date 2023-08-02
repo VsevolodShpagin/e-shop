@@ -1,0 +1,15 @@
+db background clear closed carts
+sorting & paging to list items and cart
+userRole madness from Q&A (many roles for an action)
+check role permissions in actions
+length to error message?
+
+current session user ?
+
+td/tr/table ?
+clear button borked
+modelMap pass stuff back
+ordering/paging
+
+REST ordering/page
+REST tests

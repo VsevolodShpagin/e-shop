@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="e-Shop">
+    <meta name="author" content="Planet Express">
+    <title>Planet Express e-Shop</title>
+</head>
+
+<body>
+<h2>Cart items</h2>
+<div th:if="${items != null and items.empty}">
+    Your cart is empty.
+</div>
+<div th:if="${items != null and !items.empty}">
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td>Price:</td>
+            <td>Quantity:</td>
+        </tr>
+        <tr th:each="item : ${items}">
+            <form action="/removeItemFromCart" th:object="${removeItemFromCartRequest}" method="post">
+                <td th:text="${item.itemName}"></td>
+                <td><input type="hidden" th:value="${item.itemName}" th:attr="name=itemName"/></td>
+                <td th:text="${item.itemPrice}"></td>
+                <td th:text="${item.orderedQuantity}"></td>
+                <td>
+                    <input type="submit" value="Remove item">
+                </td>
+            </form>
+        </tr>
+        <tr>
+            <td>Total:</td>
+            <td th:text="${#aggregates.sum(items.![itemPrice * orderedQuantity])}"></td>
+        </tr>
+    </table>
+    <form action="/buy" method="post">
+        <input type="submit" value="Buy">
+    </form>
+</div>
+<table th:if="${errors != null}">
+    <tr th:each="error : ${errors}">
+        <td th:text="${error.field}"></td>
+        <td th:text="${error.errorCode}"></td>
+        <td th:text="${error.message}"></td>
+    </tr>
+</table>
+<form action="/" method="get">
+    <input type="submit" value="Back" name="Submit"/>
+</form>
+</body>
+
+</html>

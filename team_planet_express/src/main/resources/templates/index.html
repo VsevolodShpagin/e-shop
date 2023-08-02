@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="e-Shop">
+    <meta name="author" content="Planet Express">
+    <title>Planet Express e-Shop</title>
+</head>
+
+<body>
+<h2>Hello,
+    <text th:text="${user}"></text>
+</h2>
+<div th:if="${userRole != 'MANAGER'}">
+    <h3>Your cart is
+        <text th:text="${cartStatus}"></text>
+        <span th:if="${cartStatus == 'Open'}">
+            and it has
+            <text th:text="${cartItemQuantity}"></text>
+            items
+            <form action="/listCartItems" method="get">
+                <input type="submit" value="My cart">
+            </form>
+        </span>
+    </h3>
+</div>
+<table th:if="${userRole == 'GUEST'}">
+    <tr>
+        <td>Login:</td>
+        <td>Password:</td>
+    </tr>
+    <tr>
+        <form action="/signIn" th:object="${signInRequest}" method="post">
+            <td><input type="text" th:field="${signInRequest.loginName}"/></td>
+            <td><input type="text" th:field="${signInRequest.password}"/></td>
+            <td>
+                <input type="submit" value="Sign in"/>
+            </td>
+
+        </form>
+        <form action="/signUp" th:object="${signUpRequest}" method="get">
+            <td>
+                <input type="submit" value="Sign Up">
+            </td>
+        </form>
+    </tr>
+</table>
+<div th:if="${userRole != 'GUEST'}">
+    <form action="/signOut" th:object="${signOutRequest}" method="post">
+        <td>
+            <input type="submit" value="Sign Out">
+        </td>
+    </form>
+</div>
+<table th:if="${signInErrors != null}">
+    <tr th:each="error : ${signInErrors}">
+        <td th:text="${error.field}"></td>
+        <td th:text="${error.errorCode}"></td>
+        <td th:text="${error.message}"></td>
+    </tr>
+</table>
+<div th:if="${userRole != 'MANAGER'}">
+    <h2>Items</h2>
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td>Max price:</td>
+        </tr>
+        <tr>
+            <form action="/searchItem" th:object="${searchItemRequest}" method="post">
+                <td><input type="text" th:field="${searchItemRequest.itemName}"/></td>
+                <td><input type="text" th:field="${searchItemRequest.price}"/></td>
+                <td>
+                    <input type="submit" value="Search item"/>
+                    <input type="reset" value="Clear"/>
+                </td>
+            </form>
+        </tr>
+    </table>
+    <form action="/" method="get">
+        <input type="submit" name="pageSize" value="5">
+        <input type="submit" name="pageSize" value="10">
+        <input type="submit" name="pageSize" value="20">
+        <input type="submit" name="paging" value="back">
+        <input type="submit" name="paging" value="next">
+    </form>
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td>Price:</td>
+            <td>Quantity:</td>
+            <td>Order amount:</td>
+        </tr>
+        <div th:if="${shopItems != null}">
+            <tr th:each="item : ${shopItems}">
+                <form action="/addItemToCart" th:object="${addItemToCartRequest}" method="post">
+                    <td th:text="${item.name}"></td>
+                    <td><input type="hidden" th:value="${item.name}" th:attr="name=itemName"/></td>
+                    <td th:text="${item.price}"></td>
+                    <td th:text="${item.availableQuantity}"></td>
+                    <td><input type="number" th:min="0" th:max="${item.availableQuantity}" placeholder="0"
+                               th:field="${addItemToCartRequest.orderedQuantity}"/></td>
+                    <td>
+                        <input type="submit" value="Add item">
+                    </td>
+                </form>
+            </tr>
+        </div>
+    </table>
+    Page:
+    <text th:text="${pageNumber}"></text>
+</div>
+<div th:if="${userRole == 'MANAGER'}">
+    <a href="/addItemToShop">Add item to shop</a> <br>
+    <a href="/changeItemData">Change item data</a> <br>
+</div>
+</body>
+
+</html>
